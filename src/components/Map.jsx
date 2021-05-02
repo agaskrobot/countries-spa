@@ -23,15 +23,17 @@ export function Map({ countries }) {
   }
 
   return (
-    <div className="relative w-64 h-64 sm:w-98 sm:h-98 md:w-100 md:h-100">
-      {isLoaded && (
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
-          {countries.map((country) => {
-            let position = { lat: country.latlng[0], lng: country.latlng[1] };
-            return <Marker key={country.alpha3Code} label={country.name} position={position} />;
-          })}
-        </GoogleMap>
-      )}
+    <div className="flex w-full h-full items-center justify-center">
+      <div className="relative w-64 h-64 sm:w-98 sm:h-98 md:w-100 md:h-100">
+        {isLoaded && (
+          <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
+            {countries.map((country) => {
+              let position = { lat: country.latlng[0], lng: country.latlng[1] };
+              return <Marker key={country.alpha3Code} label={country.name} position={position} />;
+            })}
+          </GoogleMap>
+        )}
+      </div>
     </div>
   );
 }
