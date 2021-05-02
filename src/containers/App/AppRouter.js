@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
-import { Countries } from "../Countries";
+import { Countries } from '../Countries';
 import { NotFound } from '../../components';
 
 const AppRouter = () => (
