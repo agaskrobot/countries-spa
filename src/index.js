@@ -1,9 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import { App } from "./containers/App";
+import { App } from './containers/App';
 
-import "./index.css";
+import './index.css';
 
 const app = () => (
   <React.StrictMode>
@@ -11,4 +11,4 @@ const app = () => (
   </React.StrictMode>
 );
 
-ReactDOM.render(app(), document.getElementById("root"));
+ReactDOM.render(app(), document.getElementById('root'));
