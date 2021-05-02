@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import { ReactComponent as SpinnerIcon } from '../assets/icons/spinner.svg';
 import { getCountry } from '../api';
 
-const Loading = () => (
-  <div className="flex rounded-lg w-full h-40 bg-white shadow-lg items-center justify-center">
-    <SpinnerIcon className="animate-spin m-3 h-16 w-16 text-indigo-500" />
-  </div>
-);
-
-const ResultList = ({ results, onCountryClick }) => {
-  if (!results.length) {
+const ResultList = ({ results, loading, onCountryClick }) => {
+  if (loading) {
+    return (
+      <div className="flex rounded-lg w-full h-40 bg-white shadow-lg items-center justify-center">
+        <SpinnerIcon className="animate-spin m-3 h-16 w-16 text-indigo-500" />
+      </div>
+    );
+  } else if (!results.length) {
     return null;
   }
   return (
@@ -33,8 +33,8 @@ const ResultList = ({ results, onCountryClick }) => {
 };
 
 ResultList.propTypes = {
+  loading: PropTypes.bool,
   results: PropTypes.array,
-  selectedCountries: PropTypes.array,
   onCountryClick: PropTypes.func
 };
 
@@ -74,16 +74,7 @@ export function SearchBar({ selectedCountries, onCountrySelect, onError }) {
     setResultsVisible(false);
   };
 
-  let resultsComponent;
-  if (value !== '' && loading) {
-    resultsComponent = <Loading />;
-  } else if (value !== '' && results.length) {
-    let resultsToShow = results.filter((result) => !selectedCountries.includes(result));
-    resultsComponent = <ResultList results={resultsToShow} onCountryClick={handleSelectCountry} />;
-  } else {
-    resultsComponent = null;
-  }
-
+  let resultsToShow = results.filter((result) => !selectedCountries.includes(result));
   return (
     <div className="z-40 mt-10 w-full text-base font-extralight">
       <input
@@ -96,7 +87,9 @@ export function SearchBar({ selectedCountries, onCountrySelect, onError }) {
         onChange={(e) => setValue(e.target.value)}
         value={value}
       />
-      {resultsVisible && resultsComponent}
+      {resultsVisible && value.length && (
+        <ResultList loading={loading} results={resultsToShow} onCountryClick={handleSelectCountry} />
+      )}
     </div>
   );
 }
