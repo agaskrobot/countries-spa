@@ -4,7 +4,49 @@ import PropTypes from 'prop-types';
 import { ReactComponent as SpinnerIcon } from '../assets/icons/spinner.svg';
 import { getCountry } from '../api';
 
-export function SearchBar({ onCountrySelect, onError }) {
+const Loading = () => (
+  <div className="flex rounded-lg w-full h-40 bg-white shadow-lg items-center justify-center">
+    <SpinnerIcon className="animate-spin m-3 h-16 w-16 text-indigo-500" />
+  </div>
+);
+
+const ResultNotFound = () => (
+  <div className="flex text-base font-extralight shadow-lg rounded-lg w-full h-40 bg-white items-center text-gray-700 justify-center">
+    No results found
+  </div>
+);
+
+const ResultList = ({ results, selectedCountries, onCountryClick }) => (
+  <div className="flex-col text-base font-extralight shadow-lg rounded-lg w-full h-auto p-5 bg-white text-gray-700 items-center justify-center">
+    {results.map((result) => {
+      let readOnly = selectedCountries.find((country) => country.name === result.name) ? true : false;
+      let className = readOnly ? 'cursor-not-allowed text-gray-500' : 'cursor-pointer hover:text-indigo-500 ';
+      return (
+        <div
+          disabled={readOnly}
+          onClick={() => onCountryClick(result)}
+          className={`flex w-full justify-between items-center py-2 ${className}`}
+          key={result.alpha3Code}
+        >
+          <div>{result.name}</div>
+          {!readOnly && (
+            <div className="flex font-light bg-indigo-500 text-white rounded-full w-5 h-5 items-center justify-center">
+              +
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+);
+
+ResultList.propTypes = {
+  results: PropTypes.array,
+  selectedCountries: PropTypes.array,
+  onCountryClick: PropTypes.func
+};
+
+export function SearchBar({ selectedCountries, onCountrySelect, onError }) {
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
@@ -14,46 +56,35 @@ export function SearchBar({ onCountrySelect, onError }) {
       .then((response) => {
         setResults(response.data);
       })
-      .catch((error) => onError(error.message))
+      .catch((error) => {
+        setResults([]);
+        onError(error.message);
+      })
       .finally(() => setLoading(false));
   };
 
   // Wait 2 sec before calling api
   useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      getResult();
-    }, 2000);
-    return () => clearTimeout(timer);
+    if (value) {
+      setLoading(true);
+      const timer = setTimeout(() => {
+        getResult();
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      setResults([]);
+    }
   }, [value]);
 
   let resultsComponent;
   if (value !== '' && loading) {
-    resultsComponent = (
-      <div className="flex rounded-lg w-full h-40 bg-white shadow-lg items-center justify-center">
-        <SpinnerIcon className="animate-spin m-3 h-16 w-16 text-indigo-500" />
-      </div>
-    );
+    resultsComponent = <Loading />;
   } else if (value !== '' && results.length) {
     resultsComponent = (
-      <div className="flex-col text-base font-extralight shadow-lg rounded-lg w-full h-auto p-5 bg-white text-gray-700 items-center justify-center">
-        {results.map((result) => (
-          <div
-            onClick={() => onCountrySelect(result)}
-            className="w-full cursor-pointer py-2 hover:text-indigo-500"
-            key={result.episode_id}
-          >
-            {result.name}
-          </div>
-        ))}
-      </div>
+      <ResultList results={results} selectedCountries={selectedCountries} onCountryClick={onCountrySelect} />
     );
   } else if (value !== '' && !results.length) {
-    resultsComponent = (
-      <div className="flex text-base font-extralight shadow-lg rounded-lg w-full h-40 bg-white items-center text-gray-700 justify-center">
-        No results found
-      </div>
-    );
+    resultsComponent = <ResultNotFound />;
   }
 
   return (
@@ -72,6 +103,7 @@ export function SearchBar({ onCountrySelect, onError }) {
   );
 }
 SearchBar.propTypes = {
+  selectedCountries: PropTypes.array,
   onError: PropTypes.func,
   onCountrySelect: PropTypes.func
 };
