@@ -87,7 +87,7 @@ export function SearchBar({ selectedCountries, onCountrySelect, onError }) {
         onChange={(e) => setValue(e.target.value)}
         value={value}
       />
-      {resultsVisible && value.length && (
+      {value && resultsVisible && (
         <ResultList loading={loading} results={resultsToShow} onCountryClick={handleSelectCountry} />
       )}
     </div>

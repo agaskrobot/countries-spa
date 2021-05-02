@@ -11,7 +11,6 @@ export function country(state = INITIAL_STATE, { type, payload }) {
     }
     case actions.DELETE_COUNTRY: {
       const items = state.items.filter((country) => country.name !== payload.countryName);
-      console.log(items);
       return { ...state, items };
     }
     case actions.LOAD_COUNTRY_LIST: {

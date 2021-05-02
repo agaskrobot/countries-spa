@@ -8,7 +8,7 @@ const actions = {
   DELETE_COUNTRY,
 
   appendCountry: (country) => ({ type: APPEND_COUNTRY, payload: { country } }),
-  deleteCountry: (countryId) => ({ type: DELETE_COUNTRY, payload: { countryId } }),
+  deleteCountry: (countryName) => ({ type: DELETE_COUNTRY, payload: { countryName } }),
   loadCountryList: (countryList) => ({ type: LOAD_COUNTRY_LIST, payload: { countryList } })
 };
 
