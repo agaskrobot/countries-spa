@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { SearchBar, Alert, SelectedCountries, Map } from '../../components';
+import { SearchBar, Alert, SelectedCountries, Map, Chart } from '../../components';
 import { useDispatch, useSelector } from 'react-redux';
 import actions from '../../redux/actions/country';
 
@@ -22,6 +22,7 @@ export function Countries() {
         onClick={(countryName) => dispatch(actions.deleteCountry(countryName))}
       />
       <Map countries={selectedCountries} />
+      <Chart countries={selectedCountries} />
     </div>
   );
 }
