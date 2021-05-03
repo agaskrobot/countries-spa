@@ -13,9 +13,6 @@ export function country(state = INITIAL_STATE, { type, payload }) {
       const items = state.items.filter((country) => country.name !== payload.countryName);
       return { ...state, items };
     }
-    case actions.LOAD_COUNTRY_LIST: {
-      return { ...state, items: payload.countryList };
-    }
     default:
       return state;
   }
